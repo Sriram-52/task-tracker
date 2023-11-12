@@ -34,3 +34,6 @@ coverage
 !.vscode/launch.json
 !.vscode/extensions.json
 .turbo/*
+
+# misc
+.env
