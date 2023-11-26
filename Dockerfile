@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:16
 
 WORKDIR /app
 
@@ -14,6 +14,9 @@ RUN yarn install --frozen-lockfile
 
 # Copy the rest of the files
 COPY . .
+
+# Generate the prisma client
+RUN yarn db:generate
 
 # Build the app
 RUN yarn build

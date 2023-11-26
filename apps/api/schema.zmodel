@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/libs/models"
+  outputToNestJsResourceStructure = "false"
+  flatResourceStructure           = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "true"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  classValidation                 = "true"
+  fileNamingStyle                 = "camel"
+  noDependencies                  = "false"
+  outputType                      = "class"
+  definiteAssignmentAssertion     = "false"
+  requiredResponseApiProperty     = "true"
+  prettier                        = "true"
+}
+
+attribute @DtoReadOnly()
+attribute @DtoCreateHidden()
+attribute @DtoUpdateHidden()
+attribute @DtoEntityHidden()
+attribute @DtoApiHidden()
+attribute @DtoCreateOptional()
+attribute @DtoUpdateOptional()
+attribute @DtoRelationRequired()
+attribute @DtoRelationCanCreateOnCreate()
+attribute @DtoRelationCanConnectOnCreate()
+attribute @DtoRelationCanCreateOnUpdate()
+attribute @DtoRelationCanConnectOnUpdate()
+attribute @DtoRelationCanDisconnectOnUpdate()
+attribute @DtoRelationIncludeId()
+attribute @DtoTypeFullUpdate()
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+}
+
+model User {
+  id String @id @default(uuid()) @DtoCreateHidden @DtoUpdateHidden
+  email String @unique
+  firstName String
+  lastName String
+  role Role @default(USER) @DtoCreateOptional @DtoUpdateOptional
+  createdAt DateTime @default(now()) @DtoCreateHidden @DtoUpdateHidden
+  updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
+  assignedProjects UsersOnProjects[]
+  assignedTasks UsersOnTasks[]
+}
+
+model Project {
+  id String @id @default(uuid()) @DtoCreateHidden @DtoUpdateHidden
+  name String
+  description String
+  status String
+  startDate DateTime @db.Date
+  endDate DateTime @db.Date
+  createdAt DateTime @default(now()) @DtoCreateHidden @DtoUpdateHidden
+  updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
+  assignedUsers UsersOnProjects[]
+  tasks Task[]
+}
+
+model UsersOnProjects {
+  userId String @DtoRelationIncludeId
+  projectId String @DtoRelationIncludeId
+  createdAt DateTime @default(now()) @DtoCreateHidden @DtoUpdateHidden
+  updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
+  project Project @relation(fields: [projectId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId, projectId])
+}
+
+model Task {
+  id String @id @default(uuid()) @DtoCreateHidden @DtoUpdateHidden
+  name String
+  description String
+  status String
+  priority String
+  startDate DateTime @db.Date
+  endDate DateTime @db.Date
+  createdAt DateTime @default(now()) @DtoCreateHidden @DtoUpdateHidden
+  updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
+  projectId String @DtoRelationIncludeId
+  project Project @relation(fields: [projectId], references: [id])
+  assignedUsers UsersOnTasks[]
+}
+
+model UsersOnTasks {
+  userId String @DtoRelationIncludeId
+  taskId String @DtoRelationIncludeId
+  createdAt DateTime @default(now()) @DtoCreateHidden @DtoUpdateHidden
+  updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
+  task Task @relation(fields: [taskId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId, taskId])
+}

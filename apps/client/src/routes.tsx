@@ -10,5 +10,19 @@ export const publicRoutes: Route[] = [
 ];
 
 export const privateRoutes: Route[] = [
-	{ path: "/", Component: React.lazy(() => import("@pages/HomePage")) },
+	{
+		path: "/",
+		roles: ["ADMIN", "MANAGER", "USER"],
+		Component: React.lazy(() => import("@pages/ProjectListPage")),
+	},
+	{
+		path: "/projects/:projectId",
+		roles: ["ADMIN", "MANAGER", "USER"],
+		Component: React.lazy(() => import("@pages/ProjectDetailPage")),
+	},
+	{
+		path: "/users",
+		roles: ["ADMIN"],
+		Component: React.lazy(() => import("@pages/UserListPage")),
+	},
 ];

@@ -1,34 +1,48 @@
-import { environment } from "@environment";
-import { Session, User, createClient } from "@supabase/supabase-js";
+import {
+	authControllerLogin,
+	authControllerLoginWithToken,
+} from "@api/services/auth";
+import { SessionDto } from "@api/services/models";
 import { create } from "zustand";
 
 interface AuthStore {
-	user: User | null;
-	session: Session | null;
+	session: SessionDto | null;
 	signIn: (email: string, password: string) => Promise<void>;
 	signOut: () => Promise<void>;
+	signInWithToken: () => Promise<void>;
 }
 
-const supabase = createClient(environment.supbaseUrl, environment.supabaseKey);
-
 export const useAuthStore = create<AuthStore>((set) => ({
-	user: null,
 	session: null,
 	async signIn(email, password) {
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email,
-			password,
-		});
-		if (error) {
-			console.error(error);
-			set({ user: null, session: null });
-			return;
-		}
-		set({ user: data.user, session: data.session });
+		const session = await authControllerLogin({ email, password });
+		localStorage.setItem("access_token", session.accessToken);
+		localStorage.setItem("refresh_token", session.refreshToken);
+		set({ session });
 	},
 	async signOut() {
-		await supabase.auth.signOut();
-		set({ user: null, session: null });
-		window.location.reload();
+		localStorage.removeItem("access_token");
+		localStorage.removeItem("refresh_token");
+		set({ session: null });
+		window.location.href = "/login";
+	},
+	async signInWithToken() {
+		const accessToken = localStorage.getItem("access_token");
+		const refreshToken = localStorage.getItem("refresh_token");
+		if (accessToken && refreshToken) {
+			try {
+				const session = await authControllerLoginWithToken({
+					accessToken,
+					refreshToken,
+				});
+				localStorage.setItem("access_token", session.accessToken);
+				localStorage.setItem("refresh_token", session.refreshToken);
+				set({ session });
+			} catch (error) {
+				localStorage.removeItem("access_token");
+				localStorage.removeItem("refresh_token");
+				window.location.reload();
+			}
+		}
 	},
 }));

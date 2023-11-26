@@ -9,6 +9,7 @@ import "@fontsource/open-sans/400.css";
 import "@fontsource/open-sans/500.css";
 import "@fontsource/open-sans/700.css";
 import { createTheme } from "@mui/material";
+import type {} from "@mui/x-data-grid/themeAugmentation";
 
 const LinkBehavior = React.forwardRef<
 	HTMLAnchorElement,
@@ -29,6 +30,24 @@ export const theme = createTheme({
 		MuiButtonBase: {
 			defaultProps: {
 				LinkComponent: LinkBehavior,
+			},
+		},
+		MuiDataGrid: {
+			defaultProps: {
+				sx(theme) {
+					return {
+						"& .MuiDataGrid-columnHeaderTitle": {
+							fontWeight: "bold",
+							color: theme.palette.text.primary,
+						},
+					};
+				},
+			},
+		},
+		MuiDialog: {
+			defaultProps: {
+				fullWidth: true,
+				maxWidth: "sm",
 			},
 		},
 	},
