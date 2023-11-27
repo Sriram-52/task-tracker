@@ -136,7 +136,7 @@ export default function RegisterForm() {
 										sx={{ mt: 3, mb: 2 }}
 										disabled={!isValid || !dirty || isSubmitting}
 									>
-										Sign In
+										Sign Up
 									</Button>
 									<Grid container justifyContent="flex-end">
 										<Grid item>
