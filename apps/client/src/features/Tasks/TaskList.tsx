@@ -57,13 +57,13 @@ export default function TaskList() {
 			field: "startDate",
 			headerName: "Start Date",
 			flex: 1,
-			valueFormatter: ({ value }) => dayjs(value).format("MM/DD/YYYY"),
+			valueFormatter: ({ value }) => dayjs(value).utc().format("MM/DD/YYYY"),
 		},
 		{
 			field: "endDate",
 			headerName: "End Date",
 			flex: 1,
-			valueFormatter: ({ value }) => dayjs(value).format("MM/DD/YYYY"),
+			valueFormatter: ({ value }) => dayjs(value).utc().format("MM/DD/YYYY"),
 		},
 		{
 			field: "dueDays",
@@ -71,11 +71,14 @@ export default function TaskList() {
 			flex: 1,
 			sortable: false,
 			renderCell: (row) => {
-				const dueDays = dayjs(row.row.endDate).diff(dayjs(), "day");
-				if (dueDays < 0) {
-					return <Box color="red">{dueDays}</Box>;
+				if (row.api.getRow(row.id).status === TaskStatus.DONE) {
+					return null;
 				}
-				return <Box color="green">{dueDays}</Box>;
+				const dueDays = dayjs().diff(dayjs(row.row.endDate).utc(), "day");
+				if (dueDays < 0) {
+					return <Box color="green">{dueDays}</Box>;
+				}
+				return <Box color="red">{dueDays}</Box>;
 			},
 		},
 		{
