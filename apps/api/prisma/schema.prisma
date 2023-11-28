@@ -41,6 +41,7 @@ enum Role {
     USER
 }
 
+/// @@allow('all', true)
 model User {
     /// @DtoCreateHidden
     /// @DtoUpdateHidden
@@ -61,6 +62,7 @@ model User {
     assignedTasks UsersOnTasks[]
 }
 
+/// @@allow('all', true)
 model Project {
     /// @DtoCreateHidden
     /// @DtoUpdateHidden
@@ -80,6 +82,7 @@ model Project {
     tasks Task[]
 }
 
+/// @@allow('all', true)
 model UsersOnProjects {
     /// @DtoRelationIncludeId
     userId String
@@ -97,6 +100,7 @@ model UsersOnProjects {
     @@id([userId, projectId])
 }
 
+/// @@allow('all', true)
 model Task {
     /// @DtoCreateHidden
     /// @DtoUpdateHidden
@@ -119,6 +123,7 @@ model Task {
     assignedUsers UsersOnTasks[]
 }
 
+/// @@allow('all', true)
 model UsersOnTasks {
     /// @DtoRelationIncludeId
     userId String

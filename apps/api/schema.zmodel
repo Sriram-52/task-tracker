@@ -64,6 +64,8 @@ model User {
   updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
   assignedProjects UsersOnProjects[]
   assignedTasks UsersOnTasks[]
+
+  @@allow('all', true)
 }
 
 model Project {
@@ -77,6 +79,8 @@ model Project {
   updatedAt DateTime @updatedAt @DtoCreateHidden @DtoUpdateHidden
   assignedUsers UsersOnProjects[]
   tasks Task[]
+
+  @@allow('all', true)
 }
 
 model UsersOnProjects {
@@ -88,6 +92,7 @@ model UsersOnProjects {
   user User @relation(fields: [userId], references: [id])
 
   @@id([userId, projectId])
+  @@allow('all', true)
 }
 
 model Task {
@@ -103,6 +108,8 @@ model Task {
   projectId String @DtoRelationIncludeId
   project Project @relation(fields: [projectId], references: [id])
   assignedUsers UsersOnTasks[]
+
+  @@allow('all', true)
 }
 
 model UsersOnTasks {
@@ -114,4 +121,5 @@ model UsersOnTasks {
   user User @relation(fields: [userId], references: [id])
 
   @@id([userId, taskId])
+  @@allow('all', true)
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { Project, ProjectDto } from 'src/libs/models';
+import { Project, ProjectDto, UserDto } from 'src/libs/models';
 import { PrismaService } from 'src/libs/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -9,15 +9,15 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 export class ProjectsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createProjectDto: CreateProjectDto) {
+  async create(createProjectDto: CreateProjectDto, user: UserDto) {
     const { assignedUsers, ...rest } = createProjectDto;
-    const result = await this.prisma.getClient().project.create({
+    const result = await this.prisma.getClient(user).project.create({
       data: {
         ...rest,
       },
     });
     if (assignedUsers.length > 0) {
-      await this.prisma.getClient().usersOnProjects.createMany({
+      await this.prisma.getClient(user).usersOnProjects.createMany({
         data: assignedUsers.map((userId) => ({
           userId,
           projectId: result.id,
@@ -27,15 +27,15 @@ export class ProjectsService {
     return plainToInstance(ProjectDto, result);
   }
 
-  async findAll() {
+  async findAll(user: UserDto) {
     const result = await this.prisma
-      .getClient()
+      .getClient(user)
       .project.findMany({ orderBy: { createdAt: 'desc' } });
     return plainToInstance(ProjectDto, result);
   }
 
-  async findOne(id: string) {
-    const result = await this.prisma.getClient().project.findUnique({
+  async findOne(id: string, user: UserDto) {
+    const result = await this.prisma.getClient(user).project.findUnique({
       where: {
         id: id,
       },
@@ -50,9 +50,9 @@ export class ProjectsService {
     return plainToInstance(Project, result);
   }
 
-  async update(id: string, updateProjectDto: UpdateProjectDto) {
+  async update(id: string, updateProjectDto: UpdateProjectDto, user: UserDto) {
     const { assignedUsers, ...rest } = updateProjectDto;
-    const result = await this.prisma.getClient().project.update({
+    const result = await this.prisma.getClient(user).project.update({
       where: {
         id: id,
       },
@@ -61,12 +61,12 @@ export class ProjectsService {
       },
     });
     if (assignedUsers) {
-      await this.prisma.getClient().usersOnProjects.deleteMany({
+      await this.prisma.getClient(user).usersOnProjects.deleteMany({
         where: {
           projectId: id,
         },
       });
-      await this.prisma.getClient().usersOnProjects.createMany({
+      await this.prisma.getClient(user).usersOnProjects.createMany({
         data: assignedUsers.map((userId) => ({
           userId,
           projectId: id,
@@ -76,30 +76,30 @@ export class ProjectsService {
     return plainToInstance(ProjectDto, result);
   }
 
-  async remove(id: string) {
-    const tasks = await this.prisma.getClient().task.findMany({
+  async remove(id: string, user: UserDto) {
+    const tasks = await this.prisma.getClient(user).task.findMany({
       where: {
         projectId: id,
       },
     });
-    await this.prisma.getClient().usersOnProjects.deleteMany({
+    await this.prisma.getClient(user).usersOnProjects.deleteMany({
       where: {
         projectId: id,
       },
     });
-    await this.prisma.getClient().usersOnTasks.deleteMany({
+    await this.prisma.getClient(user).usersOnTasks.deleteMany({
       where: {
         taskId: {
           in: tasks.map((task) => task.id),
         },
       },
     });
-    await this.prisma.getClient().task.deleteMany({
+    await this.prisma.getClient(user).task.deleteMany({
       where: {
         projectId: id,
       },
     });
-    const result = await this.prisma.getClient().project.delete({
+    const result = await this.prisma.getClient(user).project.delete({
       where: {
         id: id,
       },

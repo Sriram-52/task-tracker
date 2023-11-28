@@ -62,15 +62,12 @@ export default function RegisterForm() {
 			>
 				<Box
 					sx={{
-						marginTop: 8,
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
 					}}
 				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-						<LockOutlinedIcon />
-					</Avatar>
+					<Box component="img" src="/logo.svg" sx={{ width: 100 }} mb={1} />
 					<Typography component="h1" variant="h5">
 						Sign up
 					</Typography>

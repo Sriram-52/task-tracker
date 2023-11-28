@@ -73,7 +73,7 @@ export class AuthService {
     if (error) {
       throw new UnprocessableEntityException(error.message);
     }
-    const user = await this.prisma.getClient().user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         id: data.user.id,
       },

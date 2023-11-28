@@ -50,15 +50,12 @@ export default function LoginForm() {
 			>
 				<Box
 					sx={{
-						marginTop: 8,
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
 					}}
 				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-						<LockOutlinedIcon />
-					</Avatar>
+					<Box component="img" src="/logo.svg" sx={{ width: 100 }} mb={1} />
 					<Typography component="h1" variant="h5">
 						Sign in
 					</Typography>
@@ -104,12 +101,7 @@ export default function LoginForm() {
 									>
 										Sign In
 									</Button>
-									<Grid container>
-										<Grid item xs>
-											<Link href="#" variant="body2">
-												Forgot password?
-											</Link>
-										</Grid>
+									<Grid container justifyContent="flex-end">
 										<Grid item>
 											<Link href="/register" variant="body2">
 												{"Don't have an account? Sign Up"}

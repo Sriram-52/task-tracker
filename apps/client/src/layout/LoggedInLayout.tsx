@@ -135,15 +135,7 @@ export default function LoggedInLayout({
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography
-						component="h1"
-						variant="h6"
-						color="inherit"
-						noWrap
-						sx={{ flexGrow: 1 }}
-					>
-						Task Tracker
-					</Typography>
+					<Box component="img" src="/logo.svg" sx={{ width: 75 }} />
 					<Avatar
 						sx={{ ml: "auto" }}
 						component={IconButton}

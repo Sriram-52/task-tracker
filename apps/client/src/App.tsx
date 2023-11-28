@@ -18,11 +18,15 @@ import UnAuthorizedPage from "@pages/UnAuthorizedPage";
 import NotFoundPage from "@pages/NotFoundPage";
 
 function AppContainer() {
-	const { session, signInWithToken } = useAuthStore();
+	const { session, signInWithToken, isLoading } = useAuthStore();
 
 	useEffectOnce(() => {
 		signInWithToken();
 	});
+
+	if (isLoading) {
+		return <Loader />;
+	}
 
 	if (session === null) {
 		return (

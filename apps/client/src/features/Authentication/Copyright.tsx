@@ -9,7 +9,7 @@ export default function Copyright() {
 			sx={{ mt: 8, mb: 4 }}
 		>
 			{"Copyright © "}
-			<Link color="inherit" href="https://mui.com/">
+			<Link color="inherit" href="/">
 				Task Tracker
 			</Link>{" "}
 			{new Date().getFullYear()}
