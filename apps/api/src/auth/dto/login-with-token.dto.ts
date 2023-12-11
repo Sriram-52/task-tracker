@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class LoginWithTokenDto {
+export class LoginWithTokenDto { //login with accesstoken
   @IsString()
   accessToken: string;
 

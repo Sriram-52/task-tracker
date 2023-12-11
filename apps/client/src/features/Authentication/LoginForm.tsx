@@ -18,7 +18,7 @@ const schema = object<LoginDto>({
 		.required("Password is required"),
 });
 
-export default function LoginForm() {
+export default function LoginForm() {  //LoginForm with Email and password
 	const { signIn } = useAuthStore();
 
 	const handleSubmit = async (

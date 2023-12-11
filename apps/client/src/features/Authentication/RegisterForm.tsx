@@ -21,7 +21,7 @@ const schema = object<RegisterDto>({
 	lastName: string().required("Last name is required"),
 });
 
-export default function RegisterForm() {
+export default function RegisterForm() { //Registration form with email, password and Names
 	const { mutateAsync } = useAuthControllerRegister();
 	const navigate = useNavigate();
 
